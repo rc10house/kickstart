@@ -107,11 +107,6 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
 
-  -- Plugins can also be added by using a table,
-  -- with the first argument being the link and the following
-  -- keys can be used to configure plugin behavior/loading/etc.
-  -- Use `opts = {}` to force a plugin to be loaded.
-  --
   { -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
     opts = {
@@ -307,7 +302,9 @@ require('lazy').setup({
 
       local servers = {
         clangd = {},
-        tsserver = {},
+        tsserver = {
+          capabilites = capabilities,
+        },
         gopls = {
           filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
           settings = {
@@ -344,6 +341,27 @@ require('lazy').setup({
               -- diagnostics = { disable = { 'missing-fields' } },
             },
           },
+        },
+        markdown_oxide = {
+          capabilities = vim.tbl_deep_extend('force', capabilities, {
+            workspace = {
+              didChangeWatchedFiles = {
+                dynamicRegistration = true,
+              },
+            },
+          }),
+        },
+        hls = {
+          capabilities = capabilities,
+          cmd = { 'haskell-language-server-wrapper', '--lsp' },
+          filetypes = { 'haskell', 'lhaskell' },
+          settings = {
+            haskell = {
+              cabalFormattingProvider = 'cabalfmt',
+              formattingProvider = 'ormolu',
+            },
+          },
+          single_file_support = true,
         },
       }
       --  You can press `g?` for help in this menu.
@@ -383,7 +401,7 @@ require('lazy').setup({
     opts = {
       notify_on_error = false,
       format_on_save = function(bufnr)
-        local disable_filetypes = { c = true, cpp = true }
+        local disable_filetypes = { c = true, cpp = true, go = true }
         return {
           timeout_ms = 500,
           lsp_fallback = not disable_filetypes[vim.bo[bufnr].filetype],
@@ -475,7 +493,14 @@ require('lazy').setup({
             -- set group index to 0 to skip loading LuaLS completions as lazydev recommends it
             group_index = 0,
           },
-          { name = 'nvim_lsp' },
+          {
+            name = 'nvim_lsp',
+            option = {
+              markdown_oxide = {
+                keyword_pattern = [[\(\k\| \|\/\|#\)\+]],
+              },
+            },
+          },
           { name = 'luasnip' },
           { name = 'path' },
         },
@@ -511,6 +536,8 @@ require('lazy').setup({
       -- - sd'   - [S]urround [D]elete [']quotes
       -- - sr)'  - [S]urround [R]eplace [)] [']
       require('mini.surround').setup()
+      -- automatically add pair for quotes, parens, etc
+      require('mini.pairs').setup()
 
       local statusline = require 'mini.statusline'
       statusline.setup { use_icons = vim.g.have_nerd_font }
@@ -541,7 +568,7 @@ require('lazy').setup({
     end,
   },
   -- require 'kickstart.plugins.debug',
-  require 'kickstart.plugins.indent_line',
+  -- require 'kickstart.plugins.indent_line',
   require 'kickstart.plugins.lint',
   -- require 'kickstart.plugins.autopairs',
   require 'kickstart.plugins.neo-tree',
