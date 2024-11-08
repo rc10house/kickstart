@@ -321,10 +321,25 @@ require('lazy').setup({
         },
         rust_analyzer = {
           filetypes = { 'rust' },
+          single_file_support = true,
+          capabilities = {
+            experimental = {
+              serverStatusNotification = true,
+            },
+          },
           settings = {
             ['rust-analyzer'] = {
+              imports = {
+                granularity = {
+                  group = 'module',
+                },
+                prefix = 'self',
+              },
               cargo = {
                 allFeatures = true,
+              },
+              procMacro = {
+                enable = true,
               },
             },
           },
