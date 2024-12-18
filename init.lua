@@ -616,3 +616,65 @@ require('lazy').setup({
 
 --modeline
 -- vim: ts=2 sts=2 sw=2 et
+
+-- Floating terminal
+local term_state = {
+  floating = {
+    buf = -1,
+    win = -1,
+  },
+}
+local function open_floating_window(opts)
+  opts = opts or {}
+  -- Get the editor's dimensions
+  local width = vim.o.columns
+  local height = vim.o.lines
+
+  -- Calculate the size of the floating window
+  local win_width = math.floor(width * 0.8)
+  local win_height = math.floor(height * 0.8)
+
+  -- Calculate the starting position (centered)
+  local row = math.floor((height - win_height) / 2)
+  local col = math.floor((width - win_width) / 2)
+
+  -- Define the window options
+  local win_config = {
+    relative = 'editor',
+    width = win_width,
+    height = win_height,
+    row = row,
+    col = col,
+    style = 'minimal',
+    border = 'none', -- Options: "none", "single", "double", "rounded", "solid", "shadow"
+  }
+
+  -- Create a new buffer and set it to be scratch
+  local buf = nil
+  if vim.api.nvim_buf_is_valid(opts.buf) then
+    buf = opts.buf
+  else
+    buf = vim.api.nvim_create_buf(false, true) -- false: listed, true: scratch
+  end
+
+  -- Open the floating window
+  local win = vim.api.nvim_open_win(buf, true, win_config)
+
+  return { buf = buf, win = win }
+end
+
+local toggle_terminal = function()
+  if not vim.api.nvim_win_is_valid(term_state.floating.win) then
+    term_state.floating = open_floating_window { buf = term_state.floating.buf }
+    if vim.bo[term_state.floating.buf].buftype ~= 'terminal' then
+      vim.cmd.terminal()
+    end
+    vim.cmd 'startinsert' -- switch to inserting in terminal mode
+  else
+    vim.api.nvim_win_hide(term_state.floating.win)
+  end
+end
+
+-- Create term command
+vim.api.nvim_create_user_command('OpenTerm', toggle_terminal, {})
+vim.keymap.set({ 'n', 't' }, '<space>t', toggle_terminal)
