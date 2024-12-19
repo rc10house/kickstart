@@ -646,7 +646,7 @@ local function open_floating_window(opts)
     row = row,
     col = col,
     style = 'minimal',
-    border = 'none', -- Options: "none", "single", "double", "rounded", "solid", "shadow"
+    border = 'solid', -- Options: "none", "single", "double", "rounded", "solid", "shadow"
   }
 
   -- Create a new buffer and set it to be scratch
@@ -677,4 +677,4 @@ end
 
 -- Create term command
 vim.api.nvim_create_user_command('OpenTerm', toggle_terminal, {})
-vim.keymap.set({ 'n', 't' }, '<space>t', toggle_terminal)
+vim.keymap.set({ 'n', 't' }, '`', toggle_terminal)
