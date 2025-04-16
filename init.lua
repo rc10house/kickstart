@@ -526,8 +526,17 @@ require('lazy').setup({
   {
     'morhetz/gruvbox',
     priority = 1000,
+    -- init = function()
+    --   vim.cmd.colorscheme 'gruvbox'
+    --   vim.cmd.hi 'Comment gui=none'
+    -- end,
+  },
+
+  {
+    'olimorris/onedarkpro.nvim',
+    priority = 1000, -- Ensure it loads first
     init = function()
-      vim.cmd.colorscheme 'gruvbox'
+      vim.cmd.colorscheme 'onedark_dark'
       vim.cmd.hi 'Comment gui=none'
     end,
   },
@@ -675,6 +684,47 @@ local toggle_terminal = function()
   end
 end
 
+-- gitui
+vim.g.loaded_nvim_gitui = 0
+local toggle_gitui = function()
+  -- calculate window size
+  local width = vim.api.nvim_get_option 'columns'
+  local height = vim.api.nvim_get_option 'lines'
+  local win_height = math.ceil(height * 0.9)
+  local win_width = math.ceil(width * 0.9)
+  local row = math.ceil((height - win_height) / 2)
+  local col = math.ceil((width - win_width) / 2)
+
+  -- create buffer
+  local bufnr = vim.api.nvim_create_buf(false, true)
+
+  -- setting window options
+  local window_options = {
+    style = 'minimal',
+    relative = 'editor',
+    width = win_width,
+    height = win_height,
+    row = row,
+    col = col,
+    border = 'rounded',
+  }
+
+  -- open window
+  local win_id = vim.api.nvim_open_win(bufnr, true, window_options)
+  vim.fn.termopen('gitui', {
+    on_exit = function()
+      vim.api.nvim_win_close(win_id, true)
+      vim.api.nvim_buf_delete(bufnr, { force = true })
+    end,
+  })
+
+  vim.g.loaded_nvim_gitui = 1
+  vim.cmd 'startinsert!'
+end
+
 -- Create term command
 vim.api.nvim_create_user_command('OpenTerm', toggle_terminal, {})
 vim.keymap.set({ 'n', 't' }, '`', toggle_terminal)
+
+-- Gitui
+vim.keymap.set({ 'n', 't' }, '<leader>`', toggle_gitui)
