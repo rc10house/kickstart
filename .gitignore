@@ -2,6 +2,6 @@ tags
 test.sh
 .luarc.json
 nvim
-
+.DS_STORE
 spell/
 lazy-lock.json
