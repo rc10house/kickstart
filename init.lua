@@ -103,10 +103,22 @@ vim.opt.rtp:prepend(lazypath)
 --
 --  To check the current status of your plugins, run
 --    :Lazy
---
 require('lazy').setup({
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
-
+  {
+    'stevearc/oil.nvim',
+    ---@module 'oil'
+    ---@type oil.SetupOpts
+    opts = {},
+    -- Optional dependencies
+    dependencies = { { 'echasnovski/mini.icons', opts = {} } },
+    -- dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if you prefer nvim-web-devicons
+    -- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
+    config = function()
+      require('oil').setup()
+    end,
+    lazy = false,
+  },
   { -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
     opts = {
@@ -173,7 +185,7 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
       vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
       vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
-      vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
+      vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch cureent [W]ord' })
       vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
       vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
@@ -302,9 +314,6 @@ require('lazy').setup({
 
       local servers = {
         clangd = {},
-        tsserver = {
-          capabilites = capabilities,
-        },
         gopls = {
           filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
           settings = {
@@ -365,18 +374,6 @@ require('lazy').setup({
               },
             },
           }),
-        },
-        hls = {
-          capabilities = capabilities,
-          cmd = { 'haskell-language-server-wrapper', '--lsp' },
-          filetypes = { 'haskell', 'lhaskell' },
-          settings = {
-            haskell = {
-              cabalFormattingProvider = 'cabalfmt',
-              formattingProvider = 'ormolu',
-            },
-          },
-          single_file_support = true,
         },
       }
       --  You can press `g?` for help in this menu.
@@ -465,6 +462,16 @@ require('lazy').setup({
             luasnip.lsp_expand(args.body)
           end,
         },
+        window = {
+          completion = {
+            scrollbar = false,
+            border = 'rounded',
+          },
+          documentation = {
+            scrollbar = false,
+            border = 'rounded',
+          },
+        },
         completion = { completeopt = 'menu,menuone,noinsert' },
 
         mapping = cmp.mapping.preset.insert {
@@ -522,23 +529,22 @@ require('lazy').setup({
       }
     end,
   },
-
+  -- Themes fr
   {
     'morhetz/gruvbox',
     priority = 1000,
-    -- init = function()
-    --   vim.cmd.colorscheme 'gruvbox'
-    --   vim.cmd.hi 'Comment gui=none'
-    -- end,
-  },
-
-  {
-    'olimorris/onedarkpro.nvim',
-    priority = 1000, -- Ensure it loads first
     init = function()
-      vim.cmd.colorscheme 'onedark_dark'
+      vim.cmd.colorscheme 'retrobox'
       vim.cmd.hi 'Comment gui=none'
     end,
+  },
+  {
+    'olimorris/onedarkpro.nvim',
+    -- priority = 1001, -- Ensure it loads first
+    -- init = function()
+    --   vim.cmd.colorscheme 'onedark_dark'
+    --   vim.cmd.hi 'Comment gui=none'
+    -- end,
   },
 
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
@@ -595,7 +601,7 @@ require('lazy').setup({
   -- require 'kickstart.plugins.indent_line',
   require 'kickstart.plugins.lint',
   require 'kickstart.plugins.autopairs',
-  require 'kickstart.plugins.neo-tree',
+  -- require 'kickstart.plugins.neo-tree',
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
@@ -728,3 +734,5 @@ vim.keymap.set({ 'n', 't' }, '`', toggle_terminal)
 
 -- Gitui
 vim.keymap.set({ 'n', 't' }, '<leader>`', toggle_gitui)
+
+vim.keymap.set({ 'n', 't' }, '\\', ':e . <CR>')
