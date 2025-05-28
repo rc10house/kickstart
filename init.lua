@@ -735,4 +735,10 @@ vim.keymap.set({ 'n', 't' }, '`', toggle_terminal)
 -- Gitui
 vim.keymap.set({ 'n', 't' }, '<leader>`', toggle_gitui)
 
+-- Open git repo
+vim.keymap.set({ 'n', 't' }, '<leader>g', function()
+  vim.fn.system '/Users/Ryan/scripts/git_url.sh'
+end, { noremap = true, silent = true })
+
+-- Oil
 vim.keymap.set({ 'n', 't' }, '\\', ':e . <CR>')
