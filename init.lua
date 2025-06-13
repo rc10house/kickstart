@@ -253,8 +253,7 @@ require('lazy').setup({
             vim.keymap.set('n', keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
           end
           --  To jump back, press <C-t>.
-          --  TODO: this is broken currently
-          -- map('gd', require('telescope.builtin').ls_definitions, '[G]oto [D]efinition')
+          map('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
           -- Find references for the word under cursor.
           map('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
           -- Jump to the implementation of the word under your cursor.
@@ -313,6 +312,9 @@ require('lazy').setup({
       capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
 
       local servers = {
+        ts_ls = {
+          root_dir = require('lspconfig').util.root_pattern 'package.json',
+        },
         clangd = {},
         gopls = {
           filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
@@ -532,20 +534,20 @@ require('lazy').setup({
   -- Themes fr
   {
     'morhetz/gruvbox',
-    priority = 1000,
+    priority = 1001,
     init = function()
       vim.cmd.colorscheme 'retrobox'
       vim.cmd.hi 'Comment gui=none'
     end,
   },
-  {
-    'olimorris/onedarkpro.nvim',
-    -- priority = 1001, -- Ensure it loads first
-    -- init = function()
-    --   vim.cmd.colorscheme 'onedark_dark'
-    --   vim.cmd.hi 'Comment gui=none'
-    -- end,
-  },
+  -- {
+  --   'olimorris/onedarkpro.nvim',
+  -- priority = 1001, -- Ensure it loads first
+  -- init = function()
+  --   vim.cmd.colorscheme 'onedark_dark'
+  --   vim.cmd.hi 'Comment gui=none'
+  -- end,
+  -- },
 
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
