@@ -123,6 +123,17 @@ require('lazy').setup({
     },
   },
   {
+    'iamcco/markdown-preview.nvim',
+    cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' },
+    build = function()
+      require('lazy').load { plugins = { 'markdown-preview.nvim' } }
+      vim.fn['mkdp#util#install']()
+    end,
+    config = function()
+      vim.cmd [[do FileType]]
+    end,
+  },
+  {
     'stevearc/oil.nvim',
     ---@module 'oil'
     ---@type oil.SetupOpts
@@ -748,8 +759,8 @@ local toggle_gitui = function()
 end
 
 -- Create term command
-vim.api.nvim_create_user_command('OpenTerm', toggle_terminal, {})
-vim.keymap.set({ 'n', 't' }, '`', toggle_terminal)
+-- vim.api.nvim_create_user_command('OpenTerm', toggle_terminal, {})
+-- vim.keymap.set({ 'n', 't' }, '`', toggle_terminal)
 
 -- Gitui
 vim.keymap.set({ 'n', 't' }, '<leader>`', toggle_gitui)
