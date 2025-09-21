@@ -143,7 +143,11 @@ require('lazy').setup({
     -- dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if you prefer nvim-web-devicons
     -- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
     config = function()
-      require('oil').setup()
+      require('oil').setup {
+        view_options = {
+          show_hidden = true,
+        },
+      }
     end,
     lazy = false,
   },
@@ -759,8 +763,8 @@ local toggle_gitui = function()
 end
 
 -- Create term command
--- vim.api.nvim_create_user_command('OpenTerm', toggle_terminal, {})
--- vim.keymap.set({ 'n', 't' }, '`', toggle_terminal)
+vim.api.nvim_create_user_command('OpenTerm', toggle_terminal, {})
+vim.keymap.set({ 'n', 't' }, '<leader>t', toggle_terminal)
 
 -- Gitui
 vim.keymap.set({ 'n', 't' }, '<leader>`', toggle_gitui)
