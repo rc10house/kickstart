@@ -777,5 +777,10 @@ end, { noremap = true, silent = true })
 -- Oil
 vim.keymap.set({ 'n', 't' }, '\\', ':e . <CR>')
 
+-- Oil open current dir
+vim.keymap.set('n', '<leader>o', function()
+  vim.cmd('Oil ' .. vim.fn.expand '%:p:h')
+end, { desc = "Open oil in current buffer's directory" })
+
 -- Blame
 vim.keymap.set('n', 'gb', ':GitBlameToggle <CR>')
