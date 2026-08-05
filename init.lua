@@ -104,6 +104,7 @@ vim.opt.rtp:prepend(lazypath)
 --  To check the current status of your plugins, run
 --    :Lazy
 require('lazy').setup({
+  'Wansmer/treesj',
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
   {
     'f-person/git-blame.nvim',
@@ -375,6 +376,9 @@ require('lazy').setup({
         pyright = {
           filetypes = { 'python' },
         },
+        ty = {
+          filetypes = { 'python ' },
+        },
         rust_analyzer = {
           filetypes = { 'rust' },
           single_file_support = true,
@@ -576,7 +580,34 @@ require('lazy').setup({
       }
     end,
   },
-  -- Themes fr
+  -- Themes
+  -- {
+  --   'xero/miasma.nvim',
+  --   lazy = false,
+  --   priority = 1000,
+  --   config = function()
+  --     vim.cmd 'colorscheme miasma'
+  --   end,
+  -- },
+  -- {
+  --   'ribru17/bamboo.nvim',
+  --   lazy = false,
+  --   priority = 1000,
+  --   config = function()
+  --     require('bamboo').setup {
+  --       -- optional configuration here
+  --     }
+  --     require('bamboo').load()
+  --   end,
+  -- },
+  -- {
+  --   'olimorris/onedarkpro.nvim',
+  --   priority = 1001, -- Ensure it loads first
+  --   init = function()
+  --     vim.cmd.colorscheme 'onedark_dark'
+  --     vim.cmd.hi 'Comment gui=none'
+  --   end,
+  -- },
   {
     'morhetz/gruvbox',
     priority = 1001,
@@ -585,14 +616,6 @@ require('lazy').setup({
       vim.cmd.hi 'Comment gui=none'
     end,
   },
-  -- {
-  --   'olimorris/onedarkpro.nvim',
-  -- priority = 1001, -- Ensure it loads first
-  -- init = function()
-  --   vim.cmd.colorscheme 'onedark_dark'
-  --   vim.cmd.hi 'Comment gui=none'
-  -- end,
-  -- },
 
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
@@ -797,3 +820,12 @@ end, { desc = "Open oil in current buffer's directory" })
 
 -- Blame
 vim.keymap.set('n', 'gb', ':GitBlameToggle <CR>')
+
+-- TreeSJ split block
+vim.keymap.set({ 'n', 'i' }, '<C-l>', function()
+  require('treesj').toggle {
+    join = {
+      space_in_brackets = false,
+    },
+  }
+end, { desc = 'TreeSJ: Toggle' })
