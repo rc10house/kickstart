@@ -651,15 +651,11 @@ require('lazy').setup({
   },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
-    branch = 'main',
+    branch = 'master',
     lazy = false,
     build = ':TSUpdate',
-    config = function()
-      local treesitter = require 'nvim-treesitter'
-
-      treesitter.setup()
-
-      treesitter.install {
+    opts = {
+      ensure_installed = {
         'bash',
         'c',
         'diff',
@@ -679,13 +675,23 @@ require('lazy').setup({
         'vim',
         'vimdoc',
         'yaml',
-      }
-
-      vim.api.nvim_create_autocmd('FileType', {
-        callback = function(args)
-          pcall(vim.treesitter.start, args.buf)
-        end,
-      })
+      },
+      auto_install = true,
+      highlight = {
+        enable = true,
+        additional_vim_regex_highlighting = { 'ruby' },
+      },
+      indent = { enable = true, disable = { 'ruby' } },
+    },
+    config = function(_, opts)
+      -- Use bundled queries to avoid legacy code-fence directives on Neovim 0.12.
+      vim.treesitter.query.set(
+        'markdown',
+        'injections',
+        table.concat(vim.fn.readfile(vim.env.VIMRUNTIME .. '/queries/markdown/injections.scm'), '\n')
+      )
+      ---@diagnostic disable-next-line: missing-fields
+      require('nvim-treesitter.configs').setup(opts)
     end,
   },
   -- require 'kickstart.plugins.debug',
